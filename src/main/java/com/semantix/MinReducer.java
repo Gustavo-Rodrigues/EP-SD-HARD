@@ -8,16 +8,13 @@ import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mapreduce.Reducer.Context;
 
 
-public class AverageReducer extends Reducer<Text, DoubleWritable, Text, DoubleWritable>{
+public class MinReducer extends Reducer<Text, DoubleWritable, Text, DoubleWritable>{
     @Override
     public void reduce(Text key, Iterable<DoubleWritable> values, Context context) throws IOException, InterruptedException {
-        double sum = 0;
-        int cont = 0;
+        double min = Double.MAX_VALUE;
         for (DoubleWritable value : values) {
-            sum += value.get();
-            cont++;
+            min = Math.min(min, value.get());
         }
-        Double avg = sum / cont;
-        context.write(key, new DoubleWritable(avg));
+        context.write(key, new DoubleWritable(min));
     }
 }

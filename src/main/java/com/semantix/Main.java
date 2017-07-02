@@ -26,8 +26,6 @@ public class Main{
         String method = args[6];
         Job job = Job.getInstance(conf, "ep");
         job.setJarByClass(Main.class);
-        job.setOutputKeyClass(Text.class);
-        job.setOutputValueClass(DoubleWritable.class);
         FileInputFormat.addInputPath(job, new Path(args[0]));
         FileOutputFormat.setOutputPath(job, new Path(args[1]));
 
@@ -39,20 +37,46 @@ public class Main{
         //minimos quadrados
         switch(method) {
             case "avg":
+                job.setOutputKeyClass(Text.class);
+                job.setOutputValueClass(DoubleWritable.class);
                 job.setMapperClass(AverageMapper.class);
                 job.setReducerClass(AverageReducer.class);
                 break;
             case "sd":
+                job.setOutputKeyClass(Text.class);
+                job.setOutputValueClass(DoubleWritable.class);
                 job.setMapperClass(AverageMapper.class);
                 job.setReducerClass(StandardDeviationReducer.class);
                 break;
             case "var":
+                job.setOutputKeyClass(Text.class);
+                job.setOutputValueClass(DoubleWritable.class);
+                job.setMapperClass(AverageMapper.class);
+                job.setReducerClass(VarianceReducer.class);
                 break;
             case "max":
+                job.setOutputKeyClass(Text.class);
+                job.setOutputValueClass(DoubleWritable.class);
+                job.setMapperClass(AverageMapper.class);
+                job.setReducerClass(MaxReducer.class);
                 break;
             case "min":
+                job.setOutputKeyClass(Text.class);
+                job.setOutputValueClass(DoubleWritable.class);
+                job.setMapperClass(AverageMapper.class);
+                job.setReducerClass(MinReducer.class);
                 break;
             case "square":
+                job.setOutputKeyClass(Text.class);
+                job.setOutputValueClass(Text.class);
+                job.setMapperClass(LeastSquareMapper.class);
+                job.setReducerClass(LeastSquareReducer.class);
+                break;
+            case "square2":
+                job.setOutputKeyClass(Text.class);
+                job.setOutputValueClass(DoubleWritable.class);
+                job.setMapperClass(MinimumSquareMapper.class);
+                job.setReducerClass(MinimumSquareReducer.class);
                 break;
         }
         System.exit(job.waitForCompletion(true) ? 0 : 1);

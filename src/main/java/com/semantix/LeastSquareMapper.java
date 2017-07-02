@@ -10,8 +10,7 @@ import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Mapper.Context;
 
 
-public class AverageMapper extends Mapper<LongWritable, Text, Text, DoubleWritable> {
-
+public class LeastSquareMapper extends Mapper<LongWritable, Text, Text, Text> {
     @Override
     protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
         Configuration conf = context.getConfiguration();
@@ -36,11 +35,12 @@ public class AverageMapper extends Mapper<LongWritable, Text, Text, DoubleWritab
 
         Double content = 0.0;
         String group = line.substring(time[0], time[1]);
+        Double time_group = Double.parseDouble(group);
         content = Double.parseDouble(line.substring(data_pos[0], data_pos[1]));
 
         if ( currentYear >= Integer.parseInt(start) && currentYear <= Integer.parseInt(end)){
             if (content != 999.9 && content != 99.99 && content != 9999.9) {
-                context.write(new Text(group), new DoubleWritable(content));
+                context.write(new Text(time_group.toString()), new Text(time_group.toString()+" "+content.toString() ));
             }
         }
     }

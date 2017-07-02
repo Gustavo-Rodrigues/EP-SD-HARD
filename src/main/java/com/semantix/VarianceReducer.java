@@ -9,13 +9,12 @@ import java.util.ArrayList;
 import java.util.List;
 import org.apache.hadoop.conf.Configuration;
 
-class StandardDeviationReducer extends Reducer<Text, DoubleWritable, Text, DoubleWritable> {
+class VarianceReducer extends Reducer<Text, DoubleWritable, Text, DoubleWritable> {
 
     @Override
     public void reduce(Text key, Iterable<DoubleWritable> values, Context context) throws IOException, InterruptedException {
         //Avg
 
-//        https://stackoverflow.com/questions/15530906/why-doesnt-this-code-iterate-through-the-reducer-values-twice
         //test for for possible iterator problem
         List<Double> test = new ArrayList<Double>();
 
@@ -34,7 +33,7 @@ class StandardDeviationReducer extends Reducer<Text, DoubleWritable, Text, Doubl
             summation = summation + Math.pow((data - avg), 2);
         }
 
-        Double result = Math.sqrt(summation/count-1);
+        Double result = summation/count-1;
         context.write(key, new DoubleWritable(result));
     }
 }
