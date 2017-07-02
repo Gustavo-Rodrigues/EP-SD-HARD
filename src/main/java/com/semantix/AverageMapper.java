@@ -20,23 +20,29 @@ public class AverageMapper extends Mapper<LongWritable, Text, Text, DoubleWritab
         String data = conf.get("data");
         String start = conf.get("start");
         String end = conf.get("end");
-        String period = conf.get("period");
+        String granularity = conf.get("granularity");
 
         Translate tr = new Translate();
-        //year, month, day, position
-        int[] time = new int[2];
-        time = tr.getData("year");
-
-        int[] data_pos = new int[2];
-        data_pos = tr.getData("rain");
 
         String line = value.toString();
+
+        //check if row is inside the period
+        int currentYear = Integer.parseInt(line.substring(14,18));
+        if (currentYear < Integer.parseInt(start) || currentYear > Integer.parseInt(end))
+            return;
+
+        //year, month, day, position
+        int[] time = new int[2];
+        time = tr.getData(granularity);
+
+        int[] data_pos = new int[2];
+        data_pos = tr.getData(data);
 
         double content = 0.0;
         String group = line.substring(time[0], time[1]);
         content = Double.parseDouble(line.substring(data_pos[0],data_pos[1]));
 
-        if(content != 999.9) context.write(new Text(group),new DoubleWritable(content));
+        if(content != 999.9 && content != 99.99) context.write(new Text(group),new DoubleWritable(content));
 
     }
 }

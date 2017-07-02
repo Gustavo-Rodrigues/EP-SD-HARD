@@ -18,19 +18,43 @@ public class Main{
 
     public static void main(String[] args) throws Exception {
         Configuration conf = new Configuration();
-        conf.set("data", "rain"); //rain, snow, etc..
-        conf.set("start", "2016");
-        conf.set("end", "2016");
-        conf.set("method", "fodasee");
-        conf.set("period", "year");
-        Job job = Job.getInstance(conf, "average");
+        conf.set("start", args[2]);
+        conf.set("end", args[3]);
+        conf.set("data", args[4]); //rain, snow, etc..
+        conf.set("granularity", args[5]);
+
+        String method = args[6];
+        Job job = Job.getInstance(conf, "ep");
         job.setJarByClass(Main.class);
-        job.setMapperClass(AverageMapper.class);
-        job.setReducerClass(AverageReducer.class);
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(DoubleWritable.class);
         FileInputFormat.addInputPath(job, new Path(args[0]));
         FileOutputFormat.setOutputPath(job, new Path(args[1]));
+
+        //media
+        //desvio padrão
+        //variância
+        //maximo
+        //minimo
+        //minimos quadrados
+        switch(method) {
+            case "avg":
+                job.setMapperClass(AverageMapper.class);
+                job.setReducerClass(AverageReducer.class);
+                break;
+            case "sd":
+                job.setMapperClass(AverageMapper.class);
+                job.setReducerClass(StandardDeviationReducer.class);
+                break;
+            case "var":
+                break;
+            case "max":
+                break;
+            case "min":
+                break;
+            case "square":
+                break;
+        }
         System.exit(job.waitForCompletion(true) ? 0 : 1);
     }
 }
