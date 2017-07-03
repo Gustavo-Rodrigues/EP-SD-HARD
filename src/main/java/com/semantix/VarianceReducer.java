@@ -33,7 +33,7 @@ class VarianceReducer extends Reducer<Text, DoubleWritable, Text, DoubleWritable
             summation = summation + Math.pow((data - avg), 2);
         }
 
-        Double result = summation/count-1;
+        Double result = summation/(count-1);
         context.write(key, new DoubleWritable(result));
     }
 }

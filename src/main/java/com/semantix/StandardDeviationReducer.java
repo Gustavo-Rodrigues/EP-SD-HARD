@@ -34,7 +34,7 @@ class StandardDeviationReducer extends Reducer<Text, DoubleWritable, Text, Doubl
             summation = summation + Math.pow((data - avg), 2);
         }
 
-        Double result = Math.sqrt(summation/count-1);
+        Double result = Math.sqrt(summation/(count-1));
         context.write(key, new DoubleWritable(result));
     }
 }

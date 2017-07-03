@@ -12,6 +12,7 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringTokenizer;
 
 class LeastSquareReducer extends Reducer<Text, Text, Text, Text> {
     @Override
@@ -23,41 +24,47 @@ class LeastSquareReducer extends Reducer<Text, Text, Text, Text> {
         List<Double> values2 = new ArrayList<Double>();
 
         for(Text v : values){
-            double data[] = new double[2];
-            data[0] = Double.parseDouble(v.toString().split(" ")[0]);
-            data[1] = Double.parseDouble(v.toString().split(" ")[1]);
-            keys.add(data[0]);
-            values2.add(data[1]);
+            String test = String.valueOf(v);
+            //let's try the tokenizer
+//            double x = Double.parseDouble(test.split("-")[0]);
+//            double y = Double.parseDouble(test.split("-")[1]);
+            StringTokenizer st = new StringTokenizer(test, "-");
+            Double x = Double.parseDouble(st.nextElement().toString());
+            Double y = Double.parseDouble(st.nextElement().toString());
+            if(!Double.isNaN(x)) keys.add(x);
+            if(!Double.isNaN(y)) values2.add(y);
         }
 
         //average of x
-        double sum = 0;
-        double count = 0.0;
+        Double sum = 0.0;
+        Double count = 0.0;
         for (double x: keys) {
             sum = sum + x;
-            count++;
+            count = count +1;
         }
-        double xAvg = sum/count;
+        Double xAvg = sum/count;
 
         //average of y
-        sum = 0;
-        count = 0.0;
-        for (double x: values2) {
-            sum = sum + x;
-            count++;
+        Double sum2 = 0.0;
+        Double count2 = 0.0;
+        for (double y: values2) {
+            sum2 = sum2 + y;
+            count2++;
         }
-        double yAvg = sum/count;
+        Double yAvg = sum2/count2;
 
         int size = keys.size();
+        Double numerador = 0.0;
+        Double denominador = 0.0;
         //xi and yi
         for(int i=0;i<size;i++){
             double xi = keys.get(i);
             double yi = values2.get(i);
-            double numerator = xi * (yi - yAvg);
-            double denominator = xi * (xi - xAvg);
-            b = b + (numerator/denominator);
+            numerador = numerador +(xi * (yi - yAvg));
+            denominador = denominador +  (xi * (xi - xAvg));
         }
+        b = numerador/denominador;
         a = yAvg - (b*xAvg);
-        context.write(new Text(a.toString()), new Text(b.toString()));
+        context.write(key, new Text(String.valueOf(denominador)+"-"+String.valueOf(numerador)+"-"+String.valueOf(yAvg)+"-"+String.valueOf(a)+"-"+String.valueOf(b)));
     }
 }

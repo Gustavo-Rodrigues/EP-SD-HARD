@@ -40,7 +40,7 @@ public class LeastSquareMapper extends Mapper<LongWritable, Text, Text, Text> {
 
         if ( currentYear >= Integer.parseInt(start) && currentYear <= Integer.parseInt(end)){
             if (content != 999.9 && content != 99.99 && content != 9999.9) {
-                context.write(new Text(time_group.toString()), new Text(time_group.toString()+" "+content.toString() ));
+                context.write(new Text(String.valueOf(time_group)), new Text(String.valueOf(time_group)+"-"+String.valueOf(content)));
             }
         }
     }
