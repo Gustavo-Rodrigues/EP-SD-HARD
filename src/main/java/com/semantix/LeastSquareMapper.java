@@ -34,7 +34,7 @@ public class LeastSquareMapper extends Mapper<LongWritable, Text, Text, Text> {
         data_pos = tr.getData(data);
 
         Double content = 0.0;
-        String group = line.substring(time[0], time[1]);
+        String group = line.substring(14,22);;
         Double time_group = Double.parseDouble(group);
         content = Double.parseDouble(line.substring(data_pos[0], data_pos[1]));
 

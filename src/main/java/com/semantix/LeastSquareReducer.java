@@ -65,6 +65,8 @@ class LeastSquareReducer extends Reducer<Text, Text, Text, Text> {
         }
         b = numerador/denominador;
         a = yAvg - (b*xAvg);
-        context.write(key, new Text(String.valueOf(denominador)+"-"+String.valueOf(numerador)+"-"+String.valueOf(yAvg)+"-"+String.valueOf(a)+"-"+String.valueOf(b)));
+        Double Y1 = a + b*keys.get(0);
+        Double Y2 = a + b*keys.get(keys.size() - 1);
+        context.write(key, new Text(String.valueOf(a)+"-"+String.valueOf(b)+"-"+String.valueOf(Y1)+"-"+String.valueOf(Y2)));
     }
 }
